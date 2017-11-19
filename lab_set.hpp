@@ -61,44 +61,29 @@ public:
 		{
 			node *y=x->fa;
 			node *z=y->fa;
+			int l;
+			int r;
 			if(y==z->tr[0])
-			{
-				if(z->tr[1]!=NULL&&z->tr[1]->color==0)
-				{
-					z->tr[1]->color=1;
-					y->color=1;
-					z->color=0;
-					x=z;
-					continue;
-				}
-				if(y->tr[1]==x)
-				{
-					rotate(x);
-					std::swap(x,y);
-				}
-				y->color=1;
-				z->color=0;
-				rotate(y);
-			}
+				l=0;
 			else
+				l=1;
+			r=l^1;
+			if(z->tr[r]!=NULL&&z->tr[r]->color==0)
 			{
-				if(z->tr[0]!=NULL&&z->tr[0]->color==0)
-				{
-					z->tr[0]->color=1;
-					y->color=1;
-					z->color=0;
-					x=z;
-					continue;
-				}
-				if(y->tr[0]==x)
-				{
-					rotate(x);
-					std::swap(x,y);
-				}
+				z->tr[r]->color=1;
 				y->color=1;
 				z->color=0;
-				rotate(y);
-      }
+				x=z;
+				continue;
+			}
+			if(y->tr[r]==x)
+			{
+				rotate(x);
+				std::swap(x,y);
+			}
+			y->color=1;
+			z->color=0;
+			rotate(y);
 		}
     root->color=1;
 	}
@@ -235,71 +220,42 @@ public:
 		node *brother;
     for(;(x==NULL||x->color==1)&&x!=root;)
 	    {
+				int l;
+				int r;
 				if(father->tr[0]==x)
+					l=0;
+				else
+					l=1;
+				r=l^1;
+				brother=father->tr[r];
+				if(brother->color==0)
 				{
-				  brother=father->tr[1];
-					if(brother->color==0)
-					{
-						brother->color=1;
-						father->color=0;
-						rotate(brother);
-						brother=father->tr[1];
-					}
-					if((brother->tr[0]==NULL||brother->tr[0]->color)&&(brother->tr[1]==NULL||brother->tr[1]->color))
-					{
-						brother->color=0;
-						x=father;
-						father=x->fa;
-					}
-					else
-					{
-						if(brother->tr[1]==NULL||brother->tr[1]->color)
-						{
-							brother->tr[0]->color=1;
-							brother->color=0;
-							rotate(brother->tr[0]);
-							brother=father->tr[1];
-						}
-						brother->color=father->color;
-						father->color=1;
-						brother->tr[1]->color=1;
-						rotate(brother);
-						x=root;
-						break;
-					}
+					brother->color=1;
+					father->color=0;
+					rotate(brother);
+					brother=father->tr[r];
+				}
+        if((brother->tr[0]==NULL||brother->tr[0]->color)&&(brother->tr[1]==NULL||brother->tr[1]->color))
+				{
+          brother->color=0;
+				  x=father;
+					father=x->fa;
 				}
 				else
 				{
-					brother=father->tr[0];
-					if(brother->color==0)
+					if(brother->tr[r]==NULL||brother->tr[r]->color)
 					{
-						brother->color=1;
-						father->color=0;
-						rotate(brother);
-						brother=father->tr[0];
+						brother->tr[l]->color=1;
+						brother->color=0;
+						rotate(brother->tr[l]);
+						brother=father->tr[r];
 					}
-          if((brother->tr[0]==NULL||brother->tr[0]->color)&&(brother->tr[1]==NULL||brother->tr[1]->color))
-					{
-            brother->color=0;
-						x=father;
-						father=x->fa;
-					}
-					else
-					{
-						if(brother->tr[0]==NULL||brother->tr[0]->color)
-						{
-							brother->tr[1]->color=1;
-							brother->color=0;
-							rotate(brother->tr[1]);
-							brother=father->tr[0];
-						}
-						brother->color=father->color;
-						father->color=1;
-						brother->tr[0]->color=1;
-						rotate(brother);
-						x=root;
-						break;
-					}
+					brother->color=father->color;
+					father->color=1;
+					brother->tr[r]->color=1;
+					rotate(brother);
+					x=root;
+					break;
 				}
 			}
 		if(x!=NULL)
@@ -337,6 +293,7 @@ public:
 		 del->next->pre=del->pre;
    if(del->color==1)
 		 eraseupdata(child,del->fa);
+	 delete del;
 	}
   iterator begin()
 	{

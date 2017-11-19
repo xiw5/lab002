@@ -156,12 +156,12 @@ public:
 	}
 	void clear()
   {
-	/*	for(;Begin!=NULL;)
+		for(;Begin!=NULL;)
 		{
 			node *x=Begin;
 			Begin=Begin->Next;
 			delete x;
-		}*/
+		}
 	//	delete[] group;
 		sum=0;
     Begin=NULL;
